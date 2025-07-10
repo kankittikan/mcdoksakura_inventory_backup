@@ -7,6 +7,7 @@ A Minecraft 1.12.2 Spigot plugin that automatically backs up a player's inventor
 -   **Automatic Backups**: When a player dies, their inventory (including armor) is automatically saved.
 -   **Multiple Backups**: Stores the last three death inventories for each player.
 -   **Admin Restoration**: Server operators can easily restore a player's inventory using a simple command.
+-   **Backup Listing**: List all available backups for a player and restore a specific backup by index.
 
 ## Installation
 
@@ -16,16 +17,21 @@ A Minecraft 1.12.2 Spigot plugin that automatically backs up a player's inventor
 
 ## Commands
 
-### `/restore <player>`
+### `/listbackups <player>`
+Lists all available backups for the specified player, showing their index and creation time.
+- **Usage**: `/listbackups <player_name>`
+- **Permission**: `inventorybackup.list`
 
-Restores the most recent inventory backup for the specified player.
-
--   **Usage**: `/restore <player_name>`
--   **Permission**: `inventorybackup.restore`
+### `/restore <player> [backup_index]`
+Restores a player's inventory from a backup. If `backup_index` is not specified, restores the most recent backup.
+- **Usage**: `/restore <player_name> [backup_index]`
+- **Permission**: `inventorybackup.restore`
 
 ## Permissions
 
 -   `inventorybackup.restore`: Allows a user to execute the `/restore` command.
+    -   **Default**: `op`
+-   `inventorybackup.list`: Allows a user to execute the `/listbackups` command.
     -   **Default**: `op`
 
 ## Building from Source
