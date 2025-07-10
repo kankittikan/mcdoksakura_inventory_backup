@@ -8,6 +8,7 @@ public class InventoryBackup extends JavaPlugin {
     public void onEnable() {
         getLogger().info("InventoryBackup enabled!");
         this.getCommand("restore").setExecutor(new RestoreCommand(this));
+        this.getCommand("listbackups").setExecutor(new ListBackupsCommand(this));
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
     }
 

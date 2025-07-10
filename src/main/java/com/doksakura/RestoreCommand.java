@@ -22,8 +22,8 @@ public class RestoreCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 1) {
-            sender.sendMessage("Usage: /restore <player>");
+        if (args.length < 1 || args.length > 2) {
+            sender.sendMessage("Usage: /restore <player> [backup_index]");
             return false;
         }
 
@@ -42,16 +42,36 @@ public class RestoreCommand implements CommandExecutor {
         File[] backups = backupDir.listFiles();
         Arrays.sort(backups, Comparator.comparingLong(File::lastModified).reversed());
 
-        File latestBackup = backups[0];
-        org.bukkit.configuration.file.FileConfiguration config = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(latestBackup);
+        int backupIndex = 1;
+        if (args.length == 2) {
+            try {
+                backupIndex = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("Invalid backup index.");
+                return false;
+            }
+        }
 
-        ItemStack[] armor = ((List<ItemStack>) config.get("inventory.armor")).toArray(new ItemStack[0]);
-        ItemStack[] content = ((List<ItemStack>) config.get("inventory.content")).toArray(new ItemStack[0]);
+        if (backupIndex <= 0 || backupIndex > backups.length) {
+            sender.sendMessage("Backup index out of bounds.");
+            return false;
+        }
+
+        File backupToRestore = backups[backupIndex - 1];
+        org.bukkit.configuration.file.FileConfiguration config = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(backupToRestore);
+
+        @SuppressWarnings("unchecked")
+        List<ItemStack> armorList = (List<ItemStack>) config.getList("inventory.armor");
+        @SuppressWarnings("unchecked")
+        List<ItemStack> contentList = (List<ItemStack>) config.getList("inventory.content");
+
+        ItemStack[] armor = armorList.toArray(new ItemStack[0]);
+        ItemStack[] content = contentList.toArray(new ItemStack[0]);
 
         target.getInventory().setArmorContents(armor);
         target.getInventory().setContents(content);
 
-        sender.sendMessage("Inventory restored for " + target.getName());
+        sender.sendMessage("Inventory restored for " + target.getName() + " from backup " + backupIndex);
         return true;
     }
 }
