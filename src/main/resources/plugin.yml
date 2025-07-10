@@ -1,0 +1,13 @@
+name: InventoryBackup
+version: 1.0
+main: com.doksakura.InventoryBackup
+api-version: 1.12
+commands:
+  restore:
+    description: Restores a player's inventory from the latest backup.
+    usage: /restore <player>
+    permission: inventorybackup.restore
+permissions:
+  inventorybackup.restore:
+    description: Allows restoring a player's inventory.
+    default: op
